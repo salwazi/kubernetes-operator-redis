@@ -1,0 +1,165 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: redis.cache.tc
+spec:
+  group: cache.tc
+  names:
+    kind: Redis
+    listKind: RedisList
+    plural: redis
+    singular: redis
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Redis is the Schema for the redis API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RedisSpec defines the desired state of Redis
+            properties:
+              image:
+                description: Image is the Redis Docker image
+                type: string
+              replicas:
+                description: Replicas is the number of replicas for each Redis node
+                format: int32
+                type: integer
+              resources:
+                description: Resources defines the CPU and memory resource requirements
+                properties:
+                  limits:
+                    description: Limits specifies the maximum amount of compute resources
+                      required.
+                    properties:
+                      cpu:
+                        description: CPU request and limit
+                        type: string
+                      memory:
+                        description: Memory request and limit
+                        type: string
+                    required:
+                    - cpu
+                    - memory
+                    type: object
+                  requests:
+                    description: Requests specifies the minimum amount of compute
+                      resources required.
+                    properties:
+                      cpu:
+                        description: CPU request and limit
+                        type: string
+                      memory:
+                        description: Memory request and limit
+                        type: string
+                    required:
+                    - cpu
+                    - memory
+                    type: object
+                required:
+                - requests
+                type: object
+              secretName:
+                description: SecretName is the name of the Kubernetes Secret object
+                  that stores the Redis password
+                type: string
+              storage:
+                description: Storage defines the storage requirements for Redis
+                properties:
+                  size:
+                    description: Size is the size of the storage to allocate to each
+                      Redis instance
+                    type: string
+                  storageClassName:
+                    description: StorageClassName is the name of the StorageClass
+                      used for provisioning volumes
+                    type: string
+                required:
+                - size
+                type: object
+              version:
+                description: Version is the version of Redis to deploy
+                type: string
+            required:
+            - image
+            - replicas
+            - resources
+            - storage
+            - version
+            type: object
+          status:
+            description: RedisStatus defines the observed state of Redis
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations
+                  of an object's state.
+                items:
+                  description: DeploymentCondition describes the state of a deployment
+                    at a certain point.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    lastUpdateTime:
+                      description: The last time this condition was updated.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of deployment condition.
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              readyReplicas:
+                description: ReadyReplicas is the number of replicas that are ready
+                  and serving requests.
+                format: int32
+                type: integer
+              totalReplicas:
+                description: TotalReplicas is the total number of desired replicas.
+                format: int32
+                type: integer
+            required:
+            - readyReplicas
+            - totalReplicas
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
