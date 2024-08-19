@@ -79,8 +79,8 @@ func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	err = r.Get(ctx, types.NamespacedName{Name: secretName, Namespace: redis.Namespace}, foundSecret)
 	if err != nil && errors.IsNotFound(err) {
 		// Secret not found, create a new one
-		redisPassword, err := generateRandomPassword()
-		secret := r.createSecret(redis, redisPassword)
+		redisPassword, _ := generateRandomPassword()
+		secret, _ := r.createSecret(redis, redisPassword)
 
 		logger.Info("Creating a new Secret", "Secret.Namespace", secret.Namespace, "Secret.Name", secret.Name)
 		err = r.Create(ctx, secret)
@@ -99,7 +99,7 @@ func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	err = r.Get(ctx, types.NamespacedName{Name: redis.Name, Namespace: redis.Namespace}, foundDeployment)
 	if err != nil && errors.IsNotFound(err) {
 		// Define a new deployment
-		dep := r.deploymentForRedis(redis, secretName)
+		dep, _ := r.deploymentForRedis(redis, secretName)
 		logger.Info("Creating a new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 		err = r.Create(ctx, dep)
 		if err != nil {

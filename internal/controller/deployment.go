@@ -9,17 +9,18 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 // deploymentForRedis returns a Redis Deployment object
-func (r *RedisReconciler) deploymentForRedis(redis *cachev1alpha1.Redis, secretName string) *appsv1.Deployment {
+func (r *RedisReconciler) deploymentForRedis(redis *cachev1alpha1.Redis, secretName string) (*appsv1.Deployment, error) {
 	labels := map[string]string{
 		"app": redis.Name,
 	}
 	replicas := redis.Spec.Replicas
 
-	return &appsv1.Deployment{
+	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      redis.Name,
 			Namespace: redis.Namespace,
@@ -66,6 +67,11 @@ func (r *RedisReconciler) deploymentForRedis(redis *cachev1alpha1.Redis, secretN
 			},
 		},
 	}
+	if err := controllerutil.SetControllerReference(redis, deployment, r.Scheme); err != nil {
+		return nil, err
+	}
+	return deployment, nil
+
 }
 
 // updateDeploymentAndStatus updates the Deployment and status of a Redis resource.

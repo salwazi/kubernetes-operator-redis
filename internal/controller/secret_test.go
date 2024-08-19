@@ -24,7 +24,7 @@ func TestCreateSecret(t *testing.T) {
 	r := &RedisReconciler{}
 
 	// Act
-	secret := r.createSecret(redis, password)
+	secret, _ := r.createSecret(redis, password)
 
 	// Assert
 	assert.Equal(t, redis.Namespace, secret.Namespace, "Secret namespace should match")

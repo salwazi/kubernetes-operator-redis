@@ -76,7 +76,7 @@ func (r *RedisReconciler) updateRedisStatus(ctx context.Context, redis *cachev1a
 func (r *RedisReconciler) deleteDependantResources(ctx context.Context, redis *cachev1alpha1.Redis) error {
 
 	// Delete the Secret
-	secretName := redis.Spec.SecretName
+	secretName := redis.Name + "-secret"
 	if secretName != "" {
 		secret := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{

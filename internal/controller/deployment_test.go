@@ -37,7 +37,7 @@ func TestDeploymentForRedis(t *testing.T) {
 	r := &RedisReconciler{}
 
 	// Act
-	deployment := r.deploymentForRedis(redis, secretName)
+	deployment, _ := r.deploymentForRedis(redis, secretName)
 
 	// Assert
 	assert.Equal(t, redis.Name, deployment.Name, "Deployment name should match Redis name")
