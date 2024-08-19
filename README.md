@@ -17,8 +17,7 @@ This guide provides instructions on how to deploy the Redis Operator, create a R
 First, clone the repository containing the Redis Operator to your local machine:
 
 ```sh
-git clone https://github.com/your-github-username/redis-operator.git
-cd redis-operator
+git clone https://github.com/salwazi/kubernetes-operator-redis.git
 ```
 
 
@@ -40,8 +39,6 @@ In a
 ```sh
 kubectl apply -f config/crd/bases/cache.example.com_redis.yaml
 ```
-
->**NOTE**: Ensure that the samples has default values to test it out.
 
 
 **Confirming the Deployment and Secret**
@@ -69,9 +66,7 @@ make uninstall
 
 **UnDeploy the controller from the cluster:**
 
-```sh
-make undeploy
-```
+Since we only run the operator locally, exiting the shell is sufficient.
 
 
 ## License
